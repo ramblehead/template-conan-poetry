@@ -1,0 +1,9 @@
+Index:
+  Background: Build # Build a type + incoming reference index in the background
+  StandardLibrary: Yes
+
+Diagnostics:
+  UnusedIncludes: Strict
+
+Hover:
+  ShowAKA: Yes

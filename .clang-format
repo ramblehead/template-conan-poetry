@@ -1,0 +1,21 @@
+---
+BasedOnStyle: LLVM
+UseTab: Never
+IndentWidth: 2
+TabWidth: 2
+ColumnLimit: 79
+BreakBeforeBraces: Allman
+AllowShortIfStatementsOnASingleLine: false
+IndentCaseLabels: false
+AccessModifierOffset: -4
+NamespaceIndentation: All
+FixNamespaceComments: false
+AlignAfterOpenBracket: BlockIndent
+ContinuationIndentWidth: 2
+BreakBeforeBraces: Attach
+InsertBraces: true
+BinPackArguments: false
+AllowAllArgumentsOnNextLine: false
+BinPackParameters: false
+AllowAllParametersOfDeclarationOnNextLine: false
+...

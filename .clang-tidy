@@ -1,0 +1,4 @@
+# Checks: 'modernize*,-modernize-use-trailing-return-type'
+# Checks: '*'
+Checks: '*,-llvmlibc-*,-fuchsia-*,-altera-*,-hicpp-no-array-decay,-hicpp-explicit-conversions,-hicpp-special-member-functions,-readability-identifier-length,-modernize-use-trailing-return-type, -readability-magic-numbers'
+FormatStyle: file

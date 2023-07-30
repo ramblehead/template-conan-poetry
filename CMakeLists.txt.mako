@@ -6,7 +6,7 @@ project(compressor LANGUAGES C CXX)
 
 find_package(ZLIB REQUIRED)
 
-message("== Building with CMake version: ${CMAKE_VERSION}")
+message("== Building with CMake version: <%text>${CMAKE_VERSION}</%text>")
 
-add_executable(${PROJECT_NAME} src/main.c)
-target_link_libraries(${PROJECT_NAME} ZLIB::ZLIB)
+add_executable(<%text>${PROJECT_NAME}</%text> src/main.c)
+target_link_libraries(<%text>${PROJECT_NAME}</%text> ZLIB::ZLIB)

@@ -1,15 +1,13 @@
 #!/usr/bin/env -S python
 # Hey Emacs, this is -*- coding: utf-8; mode: python -*-
 
-
 import importlib.util
+import os
 from pathlib import Path
 from types import ModuleType
 from typing import Self
 
 from mako.lookup import TemplateLookup  # type: ignore reportMissingTypeStubs
-
-_sd_path = (Path(__file__).parent / ".").resolve(strict=True)
 
 
 class ImportModuleFromFileError(ModuleNotFoundError):
@@ -26,8 +24,9 @@ def import_module_from_file(module_path: Path, module_name: str) -> ModuleType:
     return module
 
 
-config = import_module_from_file(_sd_path / "config.py", "config")
-utils = import_module_from_file(_sd_path / "utils.py", "utils")
+sd_path = (Path(__file__).parent / ".").resolve(strict=True)
+conf = import_module_from_file(sd_path / "conf.py", "conf")
+utils = import_module_from_file(sd_path / "utils.py", "utils")
 
 
 def expand_content(in_template_path: Path, out_file_path: Path) -> None:
@@ -38,24 +37,41 @@ def expand_content(in_template_path: Path, out_file_path: Path) -> None:
     )
 
     file_out_str: str = template.render(  # type: ignore unknownMemberType
-        config=config,
+        conf=conf,
         utils=utils,
     )
 
     try:
         with Path.open(out_file_path, "w") as file:
             file.write(file_out_str)
-        print("String successfully written to", out_file_path)
+        print(out_file_path)
     except OSError as cause:
-        print("Error writing to file:", str(cause))
+        print(f"Error writing to file: {cause}")
 
 
-template_in_path = (
-    _sd_path.parent.resolve(strict=True) / ".rh-project.rename" / "init.el.mako"
-)
+def get_file_paths_by_ext(path: Path, ext: str) -> list[Path]:
+    file_paths: list[Path] = []
 
-file_out_path = _sd_path.parent.resolve(strict=True) / ".rh-project.rename" / "init.el"
+    for root, _, file_names in os.walk(path):
+        file_paths += (
+            Path(root) / file_name
+            for file_name in file_names
+            if file_name.endswith(ext)
+        )
 
-print(template_in_path, file_out_path)
+    return file_paths
 
-expand_content(template_in_path, file_out_path)
+
+in_template_files = get_file_paths_by_ext(sd_path.parent.resolve(strict=True), ".mako")
+
+if in_template_files:
+    print("Expanding from mako templates:")
+
+for in_template_file in in_template_files:
+    template_ext = ".mako"
+    out_file_path_str = str(in_template_file)
+    if out_file_path_str.endswith(template_ext):
+        out_file_path_str = out_file_path_str[: -len(template_ext)]
+
+    out_file_path = Path(out_file_path_str)
+    expand_content(in_template_file, out_file_path)

@@ -1,6 +1,6 @@
 ## Hey Emacs, this is -*- coding: utf-8 -*-
 <%
-  project_name = utils.to_kebab_case(config.project_name)
+  project_name = utils.to_kebab_case(conf.project_name)
 %>\
 ;; Hey Emacs, this is -*- coding: utf-8 -*-
 

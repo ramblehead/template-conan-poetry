@@ -1,38 +1,58 @@
+#!/usr/bin/env -S python
 # Hey Emacs, this is -*- coding: utf-8; mode: python -*-
 
-import .config
 
-def expand_content(model_path, templatePath, filePath):
-  packagePath = model_path.parent
-  packageName = packagePath.stem
-  packageInitPath = packagePath / '__init__.py'
-  spec = importlib.util.spec_from_file_location(packageName, packageInitPath)
-  package = importlib.util.module_from_spec(spec)
-  sys.modules[packageName] = package
-  spec.loader.exec_module(package)
+# from mako.lookup import TemplateLookup
 
-  moduleName = model_path.stem
-  model = importlib.import_module(f'{packageName}.{moduleName}')
+# from . import conf
 
-  if hasattr(model, moduleName): data = getattr(model, moduleName)
-  elif hasattr(model, 'getData'): data = model.getData()
-  else: data = model.data
+import importlib.util
+from pathlib import Path
+from types import ModuleType
+from typing import Self
 
-  relpath = os.path.relpath
+_sd_path = (Path(__file__).parent / ".").resolve(strict=True)
 
-  data['_meta'] = AutoCodeMetadata({
-    # importlib can be used to import modules directly in mako files
-    'importlib': importlib,
-    'templateName': templatePath.stem,
-    'templatePath': templatePath,
-    'modelName': model_path.stem,
-    'model_path': model_path,
-    'filePath': filePath,
-    'templateRelPath': relpath(templatePath, filePath.parent),
-    'modelRelPath': relpath(model_path, filePath.parent),
-  })
 
-  templateLookup = TemplateLookup(directories=[templatePath.parent])
-  template = templateLookup.get_template(templatePath.name)
+class ImportModuleFromFileError(ModuleNotFoundError):
+    def __init__(self: Self, module_path: Path) -> None:
+        super().__init__(f"Module '{module_path}' not found.")
 
-  print(template.render(**data), end='')
+
+def import_module_from_file(module_path: Path, module_name: str) -> ModuleType:
+    spec = importlib.util.spec_from_file_location(module_name, module_path)
+    if spec is None or spec.loader is None:
+        raise ImportModuleFromFileError(module_path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+conf = import_module_from_file(_sd_path / "conf.py", "conf")
+
+# def expand_content(template_in_path: Path, file_out_path: Path) -> None:
+#     template_lookup = TemplateLookup(directories=[template_in_path.parent])
+#     template = template_lookup.get_template(template_in_path.name)
+#     file_out_str: str = template.render(conf=conf)
+
+#     try:
+#         with Path.open(file_out_path, "w") as file:
+#             file.write(file_out_str)
+#         print("String successfully written to", file_out_path)
+#     except OSError as cause:
+#         print("Error writing to file:", str(cause))
+
+
+# template_in_path = (
+#     Path(__file__).parent.resolve(strict=True) / ".rh-project.rename" / "init.el.mako"
+# )
+
+# file_out_path = (
+#     Path(__file__).parent.resolve(strict=True) / ".rh-project.rename" / "init.el"
+# )
+
+# print(template_in_path, file_out_path)
+
+# expand_content(template_in_path, file_out_path)
+
+print("xxx", conf.project_name)

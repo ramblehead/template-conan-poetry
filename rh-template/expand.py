@@ -26,13 +26,21 @@ def import_module_from_file(module_path: Path, module_name: str) -> ModuleType:
     return module
 
 
-conf = import_module_from_file(_sd_path / "conf.py", "conf")
+config = import_module_from_file(_sd_path / "config.py", "config")
+utils = import_module_from_file(_sd_path / "utils.py", "utils")
 
 
 def expand_content(in_template_path: Path, out_file_path: Path) -> None:
     template_lookup = TemplateLookup(directories=[in_template_path.parent])
-    template = template_lookup.get_template(in_template_path.name)  # type: ignore unknownMemberType
-    file_out_str: str = template.render(conf=conf)  # type: ignore unknownMemberType
+
+    template = template_lookup.get_template(  # type: ignore unknownMemberType
+        in_template_path.name,
+    )
+
+    file_out_str: str = template.render(  # type: ignore unknownMemberType
+        config=config,
+        utils=utils,
+    )
 
     try:
         with Path.open(out_file_path, "w") as file:

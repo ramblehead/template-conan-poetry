@@ -148,6 +148,5 @@ def implode() -> None:
 
 
 if __name__ == "__main__":
-    expand_all_project_templates(delete_templates=True)
-    do_renaming(delete_origins=True)
-    implode()
+    expand_all_project_templates(delete_templates=False)
+    do_renaming(delete_origins=False)

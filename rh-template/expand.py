@@ -4,6 +4,7 @@
 import importlib.util
 import os
 import shutil
+import subprocess
 import sys
 from pathlib import Path
 from types import ModuleType
@@ -143,10 +144,13 @@ def do_renaming(*, delete_origins: bool) -> None:
 
 
 def implode() -> None:
-    s_path = Path(__file__)
-    s_path.unlink()
-    sd_path = (s_path.parent).resolve(strict=True)
-    shutil.rmtree(sd_path)
+    # parent_pid = os.getpid()
+
+    sd_path = (Path(__file__).parent).resolve(strict=True)
+    subprocess.Popen(
+        f"python -c \"import shutil, time; time.sleep(1); shutil.rmtree('{sd_path}');\"",
+        shell=True,
+    )
 
 
 if __name__ == "__main__":

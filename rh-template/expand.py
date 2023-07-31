@@ -1,8 +1,10 @@
 #!/usr/bin/env -S python
 # Hey Emacs, this is -*- coding: utf-8; mode: python -*-
 
+# import shutil
 import importlib.util
 import os
+import sys
 from pathlib import Path
 from types import ModuleType
 from typing import Self
@@ -10,23 +12,52 @@ from typing import Self
 from mako.lookup import TemplateLookup  # type: ignore reportMissingTypeStubs
 
 
-class ImportModuleFromFileError(ModuleNotFoundError):
+class ImportFromFileError(ModuleNotFoundError):
     def __init__(self: Self, module_path: Path) -> None:
         super().__init__(f"Module '{module_path}' not found.")
 
 
-def import_module_from_file(module_path: Path, module_name: str) -> ModuleType:
+def import_module_from_file(
+    module_path: Path,
+    *,
+    module_name: str | None = None,
+) -> ModuleType:
+    module_name = module_name or module_path.stem
     spec = importlib.util.spec_from_file_location(module_name, module_path)
+
     if spec is None or spec.loader is None:
-        raise ImportModuleFromFileError(module_path)
+        raise ImportFromFileError(module_path)
+
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
 
 
+def import_module_in_package_from_file(
+    module_path: Path,
+    *,
+    package_name: str | None = None,
+    module_name: str | None = None,
+) -> ModuleType:
+    package_path = module_path.parent
+    package_name = package_name or module_path.stem
+    package_init_path = package_path / "__init__.py"
+    spec = importlib.util.spec_from_file_location(package_name, package_init_path)
+
+    if spec is None or spec.loader is None:
+        raise ImportFromFileError(package_init_path)
+
+    package = importlib.util.module_from_spec(spec)
+    sys.modules[package_name] = package
+    spec.loader.exec_module(package)
+
+    module_name = module_name or module_path.stem
+    return importlib.import_module(f"{package_name}.{module_name}")
+
+
 sd_path = (Path(__file__).parent / ".").resolve(strict=True)
-conf = import_module_from_file(sd_path / "conf.py", "conf")
-utils = import_module_from_file(sd_path / "utils.py", "utils")
+conf = import_module_from_file(sd_path / "conf.py")
+utils = import_module_from_file(sd_path / "utils.py")
 
 
 def expand_template(in_template_path: Path, out_file_path: Path) -> None:
@@ -90,11 +121,18 @@ def expand_all_project_templates(*, delete_templates: bool) -> None:
             in_template_file.unlink()
 
 
-# def do_renaming(*, delete_templates: bool) -> None:
-#     in_template_files = get_file_paths_by_ext(
+# def do_renaming(*, delete_templates: bool, delete_origins: bool) -> None:
+#     rename_ext = ".rename"
+
+#     in_orig_paths = get_paths_by_ext(
 #         sd_path.parent.resolve(strict=True),
-#         template_ext,
+#         rename_ext,
+#         with_dirs=False,
 #     )
+
+#     for in_orig_path in in_orig_paths:
+#         in_orig_path_str = str(in_orig_path)
+#         out_dest_path_str = in_orig_path_str[: -len(rename_ext)]
 
 
 if __name__ == "__main__":

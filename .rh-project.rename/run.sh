@@ -25,7 +25,7 @@ CMD=(source conanrun.sh)
 echo + "${CMD[@]}" && "${CMD[@]}"
 
 echo
-CMD=(./compressor)
+CMD=("./${PROJECT_NAME}")
 echo + "${CMD[@]}" && "${CMD[@]}"
 
 echo

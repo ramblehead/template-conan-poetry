@@ -25,11 +25,11 @@ CMD+=("--extra-arg=-Wno-unknown-warning-option")
 CMD+=("--extra-arg=-Wno-unused-command-line-argument")
 CMD+=("src/*")
 
-output=$(script -qefc "${CMD[*]} 2>&1" /dev/null | tee /dev/tty)
+OUTPUT=$(script -qefc "${CMD[*]} 2>&1" /dev/null | tee /dev/tty)
 
-error_count=$(echo "${output}" | grep -ci error) ||:
-warning_count=$(echo "${output}" | grep -ci warning) ||:
+ERROR_COUNT=$(echo "${OUTPUT}" | grep -ci error) ||:
+WARNING_COUNT=$(echo "${OUTPUT}" | grep -ci warning) ||:
 
 echo
-echo "Project total number of clang-check --analyze errors: $error_count"
-echo "Project total number of clang-check --analyze warnings: $warning_count"
+echo "Project total number of clang-check --analyze errors: ${ERROR_COUNT}"
+echo "Project total number of clang-check --analyze warnings: ${WARNING_COUNT}"

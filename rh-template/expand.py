@@ -41,7 +41,7 @@ def import_module_in_package_from_file(
     module_name: str | None = None,
 ) -> ModuleType:
     package_path = module_path.parent
-    package_name = package_name or module_path.stem
+    package_name = package_name or module_path.name
     package_init_path = package_path / "__init__.py"
 
     spec = importlib.util.spec_from_file_location(
@@ -60,8 +60,17 @@ def import_module_in_package_from_file(
     return importlib.import_module(f"{package_name}.{module_name}")
 
 
+def ensure_valid_conf(conf: ModuleType) -> ModuleType:
+    if "project_name" not in conf.__dict__ or conf.project_name is None:
+        sd_path = (Path(__file__).parent).resolve(strict=True)
+        project_path = sd_path.parent.resolve(strict=True)
+        conf.project_name = project_path.name
+
+    return conf
+
+
 sd_path = (Path(__file__).parent).resolve(strict=True)
-conf = import_module_from_file(sd_path / "conf.py")
+conf = ensure_valid_conf(import_module_from_file(sd_path / "conf.py"))
 utils = import_module_from_file(sd_path / "utils.py")
 
 

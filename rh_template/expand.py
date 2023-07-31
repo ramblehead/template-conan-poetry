@@ -5,6 +5,7 @@ import os
 import shutil
 from pathlib import Path
 from types import ModuleType
+from typing import TypeVar
 
 from mako.lookup import TemplateLookup  # type: ignore reportMissingTypeStubs
 
@@ -12,8 +13,10 @@ from . import conf, utils
 
 sd_path = Path(__file__).parent
 
+T = TypeVar("T", bound=ModuleType)
 
-def ensure_valid_conf(conf: ModuleType) -> ModuleType:
+
+def _ensure_valid(conf: T) -> T:
     if "project_name" not in conf.__dict__ or conf.project_name is None:
         sd_path = (Path(__file__).parent).resolve(strict=True)
         project_path = sd_path.parent.resolve(strict=True)
@@ -22,7 +25,7 @@ def ensure_valid_conf(conf: ModuleType) -> ModuleType:
     return conf
 
 
-conf = ensure_valid_conf(conf)
+conf = _ensure_valid(conf)
 
 
 def expand_template(in_template_path: Path, out_file_path: Path) -> None:

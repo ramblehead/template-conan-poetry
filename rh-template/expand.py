@@ -42,7 +42,9 @@ def import_module_in_package_from_file(
     package_path = module_path.parent
     package_name = package_name or module_path.stem
     package_init_path = package_path / "__init__.py"
-    spec = importlib.util.spec_from_file_location(package_name, package_init_path)
+    spec = importlib.util.spec_from_file_location(
+        package_name, package_init_path
+    )
 
     if spec is None or spec.loader is None:
         raise ImportFromFileError(package_init_path)
@@ -127,14 +129,17 @@ def do_renaming(*, delete_origins: bool) -> None:
     orig_paths = get_paths_by_ext(
         sd_path.parent.resolve(strict=True),
         rename_ext,
-        with_dirs=False,
+        with_dirs=True,
     )
 
     for orig_path in orig_paths:
         orig_path_str = str(orig_path)
         dest_path_str = orig_path_str[: -len(rename_ext)]
 
-        shutil.copy(orig_path, dest_path_str)
+        if orig_path.is_dir():
+            shutil.copytree(orig_path, dest_path_str)
+        else:
+            shutil.copy(orig_path, dest_path_str)
         # print(f"{orig_path} -> {dest_path_str}")
 
 

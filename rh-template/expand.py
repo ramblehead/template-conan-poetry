@@ -135,16 +135,15 @@ def do_renaming(*, delete_origins: bool) -> None:
         dest_path_str = orig_path_str[: -len(rename_ext)]
 
         if delete_origins:
-            shutil.move(orig_path, dest_path_str)
+            print(f"{orig_path} -> {dest_path_str}")
+            # shutil.move(orig_path, dest_path_str)
         else:
             if orig_path.is_dir():
                 shutil.copytree(orig_path, dest_path_str)
             else:
                 shutil.copy(orig_path, dest_path_str)
 
-        # print(f"{orig_path} -> {dest_path_str}")
-
 
 if __name__ == "__main__":
     expand_all_project_templates(delete_templates=False)
-    do_renaming(delete_origins=False)
+    do_renaming(delete_origins=True)

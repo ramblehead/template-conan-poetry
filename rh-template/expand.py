@@ -80,3 +80,5 @@ if __name__ == "__main__":
 
         out_file_path = Path(out_file_path_str)
         expand_content(in_template_file, out_file_path)
+
+        in_template_file.unlink()

@@ -89,6 +89,7 @@ def expand_template(in_template_path: Path, out_file_path: Path) -> None:
     try:
         with Path.open(out_file_path, "w") as file:
             file.write(file_out_str)
+            file.flush()
         print(out_file_path)
     except OSError as cause:
         print(f"Error writing to file: {cause}")

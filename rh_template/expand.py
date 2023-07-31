@@ -22,6 +22,9 @@ def ensure_valid_conf(conf: ModuleType) -> ModuleType:
     return conf
 
 
+conf = ensure_valid_conf(conf)
+
+
 def expand_template(in_template_path: Path, out_file_path: Path) -> None:
     template_lookup = TemplateLookup(directories=[in_template_path.parent])
 

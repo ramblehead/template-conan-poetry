@@ -13,7 +13,7 @@ def implode() -> None:
     rh_template_dir_path = sd_path / "rh_template"
 
     subprocess.Popen(
-        f"python -c \"import shutil, os, time; time.sleep(1); shutil.rmtree('{rh_template_dir_path}'); Path.unlink('{s_path}');\"",
+        f"python -c \"import shutil, os, time; time.sleep(1); shutil.rmtree('{rh_template_dir_path}'); Path('{s_path}').unlink();\"",
         shell=True,
     )
 

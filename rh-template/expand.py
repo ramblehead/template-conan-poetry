@@ -64,7 +64,7 @@ def ensure_valid_conf(conf: ModuleType) -> ModuleType:
     if "project_name" not in conf.__dict__ or conf.project_name is None:
         sd_path = (Path(__file__).parent).resolve(strict=True)
         project_path = sd_path.parent.resolve(strict=True)
-        conf.project_name = project_path.name
+        conf.project_name = project_path.name  # type: ignore reportGeneralTypeIssues
 
     return conf
 
@@ -131,7 +131,8 @@ def expand_all_project_templates(*, delete_templates: bool) -> None:
         out_file_path = Path(out_file_path_str)
         expand_template(in_template_file, out_file_path)
 
-        if delete_templates:
+    if delete_templates:
+        for in_template_file in in_template_files:
             in_template_file.unlink()
 
 

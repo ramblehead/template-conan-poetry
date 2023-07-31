@@ -1,4 +1,7 @@
-x## Hey Emacs, this is -*- coding: utf-8 -*-
+## Hey Emacs, this is -*- coding: utf-8 -*-
+<%
+  project_name = conf.project_name
+%>\
 # Hey Emacs, this is -*- coding: utf-8 -*-
 
 cmake_minimum_required(VERSION 3.15)

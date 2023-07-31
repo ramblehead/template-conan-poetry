@@ -43,7 +43,11 @@ def import_module_in_package_from_file(
     package_path = module_path.parent
     package_name = package_name or module_path.stem
     package_init_path = package_path / "__init__.py"
-    spec = importlib.util.spec_from_file_location(package_name, package_init_path)
+
+    spec = importlib.util.spec_from_file_location(
+        package_name,
+        package_init_path,
+    )
 
     if spec is None or spec.loader is None:
         raise ImportFromFileError(package_init_path)
@@ -144,11 +148,9 @@ def do_renaming(*, delete_origins: bool) -> None:
 
 
 def implode() -> None:
-    # parent_pid = os.getpid()
-
     sd_path = (Path(__file__).parent).resolve(strict=True)
     subprocess.Popen(
-        f"python -c \"import shutil, time; time.sleep(1); shutil.rmtree('{sd_path}');\"",
+        f"python -c \"import shutil, os, time; time.sleep(1); shutil.rmtree('{sd_path}');\"",
         shell=True,
     )
 

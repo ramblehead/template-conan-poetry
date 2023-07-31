@@ -21,3 +21,4 @@ def implode() -> None:
 if __name__ == "__main__":
     expand.expand_all_project_templates(delete_templates=True)
     expand.do_renaming(delete_origins=True)
+    implode()

@@ -1,8 +1,8 @@
-## Hey Emacs, this is -*- coding: utf-8 -*-
+x## Hey Emacs, this is -*- coding: utf-8 -*-
 # Hey Emacs, this is -*- coding: utf-8 -*-
 
 cmake_minimum_required(VERSION 3.15)
-project(compressor LANGUAGES C CXX)
+project(${project_name} LANGUAGES C CXX)
 
 find_package(ZLIB REQUIRED)
 

@@ -12,7 +12,7 @@ def implode() -> None:
     sd_path = (s_path.parent).resolve(strict=True)
     rh_template_dir_path = sd_path / "rh_template"
 
-    print("\nImploding 💥")
+    print("\nImploding... 💥")
 
     subprocess.Popen(
         'python -c "'

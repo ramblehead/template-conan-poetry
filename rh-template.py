@@ -15,7 +15,12 @@ def implode() -> None:
     print("Imploding...")
 
     subprocess.Popen(
-        f"python -c \"import shutil, time; time.sleep(1); shutil.os.remove('{s_path}'); shutil.rmtree('{rh_template_dir_path}');\"",
+        'python -c "'
+        "import shutil, time;"
+        "time.sleep(1);"
+        f"shutil.os.remove('{s_path}');"
+        f"shutil.rmtree('{rh_template_dir_path}');"
+        '"',
         shell=True,
     )
 

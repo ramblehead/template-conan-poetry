@@ -1,63 +1,16 @@
 #!/usr/bin/env -S python
 # Hey Emacs, this is -*- coding: utf-8; mode: python -*-
 
-import importlib.util
 import os
 import shutil
-import subprocess
-import sys
 from pathlib import Path
 from types import ModuleType
-from typing import Self
 
 from mako.lookup import TemplateLookup  # type: ignore reportMissingTypeStubs
 
+from . import conf, utils
 
-class ImportFromFileError(ModuleNotFoundError):
-    def __init__(self: Self, module_path: Path) -> None:
-        super().__init__(f"Module '{module_path}' not found.")
-
-
-def import_module_from_file(
-    module_path: Path,
-    *,
-    module_name: str | None = None,
-) -> ModuleType:
-    module_name = module_name or module_path.stem
-    spec = importlib.util.spec_from_file_location(module_name, module_path)
-
-    if spec is None or spec.loader is None:
-        raise ImportFromFileError(module_path)
-
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
-
-
-def import_module_in_package_from_file(
-    module_path: Path,
-    *,
-    package_name: str | None = None,
-    module_name: str | None = None,
-) -> ModuleType:
-    package_path = module_path.parent
-    package_name = package_name or module_path.name
-    package_init_path = package_path / "__init__.py"
-
-    spec = importlib.util.spec_from_file_location(
-        package_name,
-        package_init_path,
-    )
-
-    if spec is None or spec.loader is None:
-        raise ImportFromFileError(package_init_path)
-
-    package = importlib.util.module_from_spec(spec)
-    sys.modules[package_name] = package
-    spec.loader.exec_module(package)
-
-    module_name = module_name or module_path.stem
-    return importlib.import_module(f"{package_name}.{module_name}")
+sd_path = Path(__file__).parent
 
 
 def ensure_valid_conf(conf: ModuleType) -> ModuleType:
@@ -67,11 +20,6 @@ def ensure_valid_conf(conf: ModuleType) -> ModuleType:
         conf.project_name = project_path.name  # type: ignore reportGeneralTypeIssues
 
     return conf
-
-
-sd_path = (Path(__file__).parent).resolve(strict=True)
-conf = ensure_valid_conf(import_module_from_file(sd_path / "conf.py"))
-utils = import_module_from_file(sd_path / "utils.py")
 
 
 def expand_template(in_template_path: Path, out_file_path: Path) -> None:
@@ -170,14 +118,6 @@ def do_renaming(*, delete_origins: bool) -> None:
                 shutil.copytree(orig_path, dest_path_str)
             else:
                 shutil.copy(orig_path, dest_path_str)
-
-
-def implode() -> None:
-    sd_path = (Path(__file__).parent).resolve(strict=True)
-    subprocess.Popen(
-        f"python -c \"import shutil, os, time; time.sleep(1); shutil.rmtree('{sd_path}');\"",
-        shell=True,
-    )
 
 
 if __name__ == "__main__":

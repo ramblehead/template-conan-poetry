@@ -1,9 +1,9 @@
 #!/usr/bin/env -S python
 # Hey Emacs, this is -*- coding: utf-8; mode: python -*-
 
-# import shutil
 import importlib.util
 import os
+import shutil
 import sys
 from pathlib import Path
 from types import ModuleType
@@ -55,7 +55,7 @@ def import_module_in_package_from_file(
     return importlib.import_module(f"{package_name}.{module_name}")
 
 
-sd_path = (Path(__file__).parent / ".").resolve(strict=True)
+sd_path = (Path(__file__).parent).resolve(strict=True)
 conf = import_module_from_file(sd_path / "conf.py")
 utils = import_module_from_file(sd_path / "utils.py")
 
@@ -121,19 +121,23 @@ def expand_all_project_templates(*, delete_templates: bool) -> None:
             in_template_file.unlink()
 
 
-# def do_renaming(*, delete_templates: bool, delete_origins: bool) -> None:
-#     rename_ext = ".rename"
+def do_renaming(*, delete_origins: bool) -> None:
+    rename_ext = ".rename"
 
-#     in_orig_paths = get_paths_by_ext(
-#         sd_path.parent.resolve(strict=True),
-#         rename_ext,
-#         with_dirs=False,
-#     )
+    orig_paths = get_paths_by_ext(
+        sd_path.parent.resolve(strict=True),
+        rename_ext,
+        with_dirs=False,
+    )
 
-#     for in_orig_path in in_orig_paths:
-#         in_orig_path_str = str(in_orig_path)
-#         out_dest_path_str = in_orig_path_str[: -len(rename_ext)]
+    for orig_path in orig_paths:
+        orig_path_str = str(orig_path)
+        dest_path_str = orig_path_str[: -len(rename_ext)]
+
+        shutil.copy(orig_path, dest_path_str)
+        # print(f"{orig_path} -> {dest_path_str}")
 
 
 if __name__ == "__main__":
     expand_all_project_templates(delete_templates=False)
+    do_renaming(delete_origins=False)

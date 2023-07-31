@@ -135,15 +135,19 @@ def do_renaming(*, delete_origins: bool) -> None:
         dest_path_str = orig_path_str[: -len(rename_ext)]
 
         if delete_origins:
-            print(f"{orig_path} -> {dest_path_str}")
-            # shutil.move(orig_path, dest_path_str)
+            shutil.move(orig_path, dest_path_str)
+        elif orig_path.is_dir():
+            shutil.copytree(orig_path, dest_path_str)
         else:
-            if orig_path.is_dir():
-                shutil.copytree(orig_path, dest_path_str)
-            else:
-                shutil.copy(orig_path, dest_path_str)
+            shutil.copy(orig_path, dest_path_str)
+
+
+def implode() -> None:
+    sd_path = (Path(__file__).parent).resolve(strict=True)
+    sd_path.unlink()
 
 
 if __name__ == "__main__":
-    expand_all_project_templates(delete_templates=False)
+    expand_all_project_templates(delete_templates=True)
     do_renaming(delete_origins=True)
+    implode()

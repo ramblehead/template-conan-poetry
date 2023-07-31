@@ -43,7 +43,6 @@ def expand_template(in_template_path: Path, out_file_path: Path) -> None:
     try:
         with Path.open(out_file_path, "w") as file:
             file.write(file_out_str)
-        print(out_file_path)
     except OSError as cause:
         print(f"Error writing to file: {cause}")
 
@@ -75,7 +74,7 @@ def expand_all_project_templates(*, delete_templates: bool) -> None:
     )
 
     if in_template_files:
-        print("Expanding from mako templates:")
+        print("Expanding from templates:")
 
     for in_template_file in in_template_files:
         out_file_path_str = str(in_template_file)
@@ -83,6 +82,8 @@ def expand_all_project_templates(*, delete_templates: bool) -> None:
             out_file_path_str = out_file_path_str[: -len(template_ext)]
 
         out_file_path = Path(out_file_path_str)
+
+        print(f"  {out_file_path}")
         expand_template(in_template_file, out_file_path)
 
     if delete_templates:

@@ -5,9 +5,9 @@ import subprocess
 import sys
 from pathlib import Path
 
-from .rh_template import expand
-
 sys.path.insert(0, str(Path(__file__).parent.resolve(strict=True)))
+
+from .rh_template import expand
 
 
 def implode() -> None:

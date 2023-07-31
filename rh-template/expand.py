@@ -144,7 +144,7 @@ def do_renaming(*, delete_origins: bool) -> None:
 
 def implode() -> None:
     sd_path = (Path(__file__).parent).resolve(strict=True)
-    sd_path.unlink()
+    Path.rmdir(sd_path)
 
 
 if __name__ == "__main__":

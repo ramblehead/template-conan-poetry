@@ -89,7 +89,6 @@ def expand_template(in_template_path: Path, out_file_path: Path) -> None:
     try:
         with Path.open(out_file_path, "w") as file:
             file.write(file_out_str)
-            file.flush()
         print(out_file_path)
     except OSError as cause:
         print(f"Error writing to file: {cause}")
@@ -146,16 +145,31 @@ def do_renaming(*, delete_origins: bool) -> None:
         with_dirs=True,
     )
 
-    for orig_path in orig_paths:
-        orig_path_str = str(orig_path)
-        dest_path_str = orig_path_str[: -len(rename_ext)]
+    if delete_origins:
+        dirs_to_move: list[tuple[str, str]] = []
 
-        if delete_origins:
-            shutil.move(orig_path, dest_path_str)
-        elif orig_path.is_dir():
-            shutil.copytree(orig_path, dest_path_str)
-        else:
-            shutil.copy(orig_path, dest_path_str)
+        # Move files first
+        for orig_path in orig_paths:
+            orig_path_str = str(orig_path)
+            dest_path_str = orig_path_str[: -len(rename_ext)]
+            if not orig_path.is_dir():
+                shutil.move(orig_path, dest_path_str)
+            else:
+                dirs_to_move.append((orig_path_str, dest_path_str))
+
+        # Then move directories
+        for orig_dir_path_str, dest_dir_path_str in dirs_to_move:
+            shutil.move(orig_dir_path_str, dest_dir_path_str)
+
+    else:
+        for orig_path in orig_paths:
+            orig_path_str = str(orig_path)
+            dest_path_str = orig_path_str[: -len(rename_ext)]
+
+            if orig_path.is_dir():
+                shutil.copytree(orig_path, dest_path_str)
+            else:
+                shutil.copy(orig_path, dest_path_str)
 
 
 def implode() -> None:

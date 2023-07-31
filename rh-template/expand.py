@@ -29,7 +29,7 @@ conf = import_module_from_file(sd_path / "conf.py", "conf")
 utils = import_module_from_file(sd_path / "utils.py", "utils")
 
 
-def expand_content(in_template_path: Path, out_file_path: Path) -> None:
+def expand_template(in_template_path: Path, out_file_path: Path) -> None:
     template_lookup = TemplateLookup(directories=[in_template_path.parent])
 
     template = template_lookup.get_template(  # type: ignore unknownMemberType
@@ -62,7 +62,7 @@ def get_file_paths_by_ext(path: Path, ext: str) -> list[Path]:
     return file_paths
 
 
-if __name__ == "__main__":
+def expand_all_project_templates(*, delete_templates: bool) -> None:
     template_ext = ".mako"
 
     in_template_files = get_file_paths_by_ext(
@@ -79,6 +79,11 @@ if __name__ == "__main__":
             out_file_path_str = out_file_path_str[: -len(template_ext)]
 
         out_file_path = Path(out_file_path_str)
-        expand_content(in_template_file, out_file_path)
+        expand_template(in_template_file, out_file_path)
 
-        in_template_file.unlink()
+        if delete_templates:
+            in_template_file.unlink()
+
+
+if __name__ == "__main__":
+    expand_all_project_templates(delete_templates=False)

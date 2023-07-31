@@ -63,16 +63,17 @@ def get_file_paths_by_ext(path: Path, ext: str) -> list[Path]:
 
 
 if __name__ == "__main__":
+    template_ext = ".mako"
+
     in_template_files = get_file_paths_by_ext(
         sd_path.parent.resolve(strict=True),
-        ".mako",
+        template_ext,
     )
 
     if in_template_files:
         print("Expanding from mako templates:")
 
     for in_template_file in in_template_files:
-        template_ext = ".mako"
         out_file_path_str = str(in_template_file)
         if out_file_path_str.endswith(template_ext):
             out_file_path_str = out_file_path_str[: -len(template_ext)]

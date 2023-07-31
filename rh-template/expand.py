@@ -143,7 +143,9 @@ def do_renaming(*, delete_origins: bool) -> None:
 
 
 def implode() -> None:
-    sd_path = (Path(__file__).parent).resolve(strict=True)
+    s_path = Path(__file__)
+    s_path.unlink()
+    sd_path = (s_path.parent).resolve(strict=True)
     shutil.rmtree(sd_path)
 
 

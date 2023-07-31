@@ -49,25 +49,30 @@ def expand_template(in_template_path: Path, out_file_path: Path) -> None:
         print(f"Error writing to file: {cause}")
 
 
-def get_file_paths_by_ext(path: Path, ext: str) -> list[Path]:
-    file_paths: list[Path] = []
+def get_paths_by_ext(path: Path, ext: str, *, with_dirs: bool) -> list[Path]:
+    result: list[Path] = []
 
-    for root, _, file_names in os.walk(path):
-        file_paths += (
+    for root, dir_names, file_names in os.walk(path):
+        names = file_names
+        if with_dirs:
+            names += dir_names
+
+        result += [
             Path(root) / file_name
             for file_name in file_names
             if file_name.endswith(ext)
-        )
+        ]
 
-    return file_paths
+    return result
 
 
 def expand_all_project_templates(*, delete_templates: bool) -> None:
     template_ext = ".mako"
 
-    in_template_files = get_file_paths_by_ext(
+    in_template_files = get_paths_by_ext(
         sd_path.parent.resolve(strict=True),
         template_ext,
+        with_dirs=False,
     )
 
     if in_template_files:
@@ -83,6 +88,13 @@ def expand_all_project_templates(*, delete_templates: bool) -> None:
 
         if delete_templates:
             in_template_file.unlink()
+
+
+# def do_renaming(*, delete_templates: bool) -> None:
+#     in_template_files = get_file_paths_by_ext(
+#         sd_path.parent.resolve(strict=True),
+#         template_ext,
+#     )
 
 
 if __name__ == "__main__":

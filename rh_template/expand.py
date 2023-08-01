@@ -226,9 +226,7 @@ def expand_and_implode(
 ) -> None:
     ctx = create_project_context(
         path=Path(implode_script_path_str).parent,
-        config=config_default
-        if config_user is None
-        else {**config_default, **config_user},
+        config=config_default if config_user is None else config_default | config_user,
     )
 
     process_expand(delete_origins=True, ctx=ctx)

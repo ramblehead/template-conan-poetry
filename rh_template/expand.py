@@ -115,16 +115,20 @@ def expand_all_project_templates(*, delete_templates: bool) -> None:
             in_template_file.unlink()
 
 
-def get_rename_destination_path(orig_path_str: str) -> str:
+def get_rename_destination_path(orig_path_str: str, *, delete_origins: bool) -> str:
     holder_path_str = orig_path_str[: -len(rename_ext)]
 
-    rename_path = Path(f"{holder_path_str}.rename.py")
-    print("xxxx", rename_path)
-    if rename_path.is_file():
-        print("zzzz")
-        reaname_mod = import_module_from_file(rename_path)
-        reaname: Callable[[Config, ModuleType], str] = reaname_mod.rename
-        return reaname(config, utils)
+    renamer_path = Path(f"{holder_path_str}.rename.py")
+    if renamer_path.is_file():
+        reanamer_mod = import_module_from_file(renamer_path)
+        reaname: Callable[[Config, ModuleType], str] = reanamer_mod.rename
+        renamed_path = renamer_path.parent / reaname(config, utils)
+
+        if delete_origins:
+            del reanamer_mod, reaname
+            renamer_path.unlink()
+
+        return str(renamed_path)
 
     return holder_path_str
 
@@ -142,7 +146,12 @@ def do_renaming(*, delete_origins: bool) -> None:
         # Move files first
         for orig_path in orig_paths:
             orig_path_str = str(orig_path)
-            dest_path_str = get_rename_destination_path(orig_path_str)
+
+            dest_path_str = get_rename_destination_path(
+                orig_path_str,
+                delete_origins=delete_origins,
+            )
+
             if not orig_path.is_dir():
                 shutil.move(orig_path, dest_path_str)
             else:

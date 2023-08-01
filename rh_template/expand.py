@@ -4,21 +4,42 @@
 import importlib.util
 import os
 import shutil
+import subprocess
 from pathlib import Path
 from types import ModuleType
-from typing import TYPE_CHECKING, Self
+from typing import TYPE_CHECKING, Self, TypedDict
 
-from mako.lookup import TemplateLookup  # type: ignore reportMissingTypeStubs
+from mako.lookup import TemplateLookup  # type: ignore reportMissingStubs
 
 from . import utils
-from .config import Config, config
+from .config import Config, config_default
 
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-sd_path = Path(__file__).parent
 template_ext = ".mako"
 rename_ext = ".rename"
+
+
+def config_ensure_valid(config: Config) -> Config:
+    if "project_name" not in config or config["project_name"] is None:
+        sd_path = (Path(__file__).parent).resolve(strict=True)
+        project_path = sd_path.parent.resolve(strict=True)
+        config["project_name"] = project_path.name
+
+    return config
+
+
+class ProjectContext(TypedDict):
+    path: Path
+    config: Config
+
+
+def create_project_context(*, path: Path, config: Config) -> ProjectContext:
+    return {
+        "path": path,
+        "config": config_ensure_valid(config),
+    }
 
 
 class ImportFromFileError(ModuleNotFoundError):
@@ -42,19 +63,12 @@ def import_module_from_file(
     return module
 
 
-def config_ensure_valid(config: Config) -> Config:
-    if "project_name" not in config or config["project_name"] is None:
-        sd_path = (Path(__file__).parent).resolve(strict=True)
-        project_path = sd_path.parent.resolve(strict=True)
-        config["project_name"] = project_path.name
-
-    return config
-
-
-config = config_ensure_valid(config)
-
-
-def expand_template(in_template_path: Path, out_file_path: Path) -> None:
+def expand_template(
+    in_template_path: Path,
+    out_file_path: Path,
+    *,
+    ctx: ProjectContext,
+) -> None:
     template_lookup = TemplateLookup(directories=[in_template_path.parent])
 
     template = template_lookup.get_template(  # type: ignore unknownMemberType
@@ -62,7 +76,7 @@ def expand_template(in_template_path: Path, out_file_path: Path) -> None:
     )
 
     file_out_str: str = template.render(  # type: ignore unknownMemberType
-        config=config,
+        config=ctx["config"],
         utils=utils,
     )
 
@@ -90,9 +104,13 @@ def get_paths_by_ext(path: Path, ext: str, *, with_dirs: bool) -> list[Path]:
     return result
 
 
-def expand_all_project_templates(*, delete_templates: bool) -> None:
+def expand_all_project_templates(
+    *,
+    delete_templates: bool,
+    ctx: ProjectContext,
+) -> None:
     in_template_files = get_paths_by_ext(
-        sd_path.parent.resolve(strict=True),
+        ctx["path"],
         template_ext,
         with_dirs=False,
     )
@@ -108,21 +126,26 @@ def expand_all_project_templates(*, delete_templates: bool) -> None:
         out_file_path = Path(out_file_path_str)
 
         print(f"  {out_file_path}")
-        expand_template(in_template_file, out_file_path)
+        expand_template(in_template_file, out_file_path, ctx=ctx)
 
     if delete_templates:
         for in_template_file in in_template_files:
             in_template_file.unlink()
 
 
-def get_rename_destination_path(orig_path_str: str, *, delete_origins: bool) -> str:
+def get_rename_destination_path(
+    orig_path_str: str,
+    *,
+    delete_origins: bool,
+    ctx: ProjectContext,
+) -> str:
     holder_path_str = orig_path_str[: -len(rename_ext)]
 
     renamer_path = Path(f"{holder_path_str}.rename.py")
     if renamer_path.is_file():
         reanamer_mod = import_module_from_file(renamer_path)
         reaname: Callable[[Config, ModuleType], str] = reanamer_mod.rename
-        renamed_path = renamer_path.parent / reaname(config, utils)
+        renamed_path = renamer_path.parent / reaname(ctx["config"], utils)
 
         if delete_origins:
             del reanamer_mod, reaname
@@ -133,9 +156,9 @@ def get_rename_destination_path(orig_path_str: str, *, delete_origins: bool) -> 
     return holder_path_str
 
 
-def do_renaming(*, delete_origins: bool) -> None:
+def do_renaming(*, delete_origins: bool, ctx: ProjectContext) -> None:
     orig_paths = get_paths_by_ext(
-        sd_path.parent.resolve(strict=True),
+        ctx["path"],
         rename_ext,
         with_dirs=True,
     )
@@ -150,6 +173,7 @@ def do_renaming(*, delete_origins: bool) -> None:
             dest_path_str = get_rename_destination_path(
                 orig_path_str,
                 delete_origins=delete_origins,
+                ctx=ctx,
             )
 
             if not orig_path.is_dir():
@@ -172,6 +196,34 @@ def do_renaming(*, delete_origins: bool) -> None:
                 shutil.copy(orig_path, dest_path_str)
 
 
-if __name__ == "__main__":
-    expand_all_project_templates(delete_templates=False)
-    do_renaming(delete_origins=False)
+def expand(*, delete_origins: bool, ctx: ProjectContext) -> None:
+    expand_all_project_templates(delete_templates=delete_origins, ctx=ctx)
+    do_renaming(delete_origins=delete_origins, ctx=ctx)
+
+
+def expand_and_implode(
+    implode_script_path_str: str,
+    config_user: Config | None = None,
+) -> None:
+    ctx = create_project_context(
+        path=Path(implode_script_path_str).parent,
+        config=config_default
+        if config_user is None
+        else {**config_default, **config_user},
+    )
+
+    expand(delete_origins=True, ctx=ctx)
+
+    print("\nImploding... 💥")
+
+    rh_template_dir_path = ctx["path"] / "rh_template"
+
+    subprocess.Popen(
+        'python -c "'
+        "import shutil, time;"
+        "time.sleep(1);"
+        f"shutil.os.remove('{implode_script_path_str}');"
+        f"shutil.rmtree('{rh_template_dir_path}');"
+        '"',
+        shell=True,
+    )

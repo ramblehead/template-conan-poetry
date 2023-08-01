@@ -8,6 +8,6 @@ class Config(TypedDict):
     project_name: str | None
 
 
-config: Config = {
+config_default: Config = {
     "project_name": None,
 }

@@ -1,5 +1,6 @@
 # Hey Emacs, this is -*- coding: utf-8; mode: python -*-
 
-from .expand import expand_and_implode
+from .config import Config
+from .expand import expand, expand_and_implode
 
-__all__ = ["expand_and_implode"]
+__all__ = ["expand", "expand_and_implode", "Config"]

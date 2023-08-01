@@ -201,9 +201,23 @@ def process_renames(*, delete_origins: bool, ctx: ProjectContext) -> None:
                 shutil.copy(orig_path, dest_path_str)
 
 
-def expand(*, delete_origins: bool, ctx: ProjectContext) -> None:
+def process_expand(*, delete_origins: bool, ctx: ProjectContext) -> None:
     expand_all_project_templates(delete_templates=delete_origins, ctx=ctx)
     process_renames(delete_origins=delete_origins, ctx=ctx)
+
+
+def expand(
+    implode_script_path_str: str,
+    config_user: Config | None = None,
+) -> None:
+    ctx = create_project_context(
+        path=Path(implode_script_path_str).parent,
+        config=config_default
+        if config_user is None
+        else {**config_default, **config_user},
+    )
+
+    process_expand(delete_origins=True, ctx=ctx)
 
 
 def expand_and_implode(
@@ -217,7 +231,7 @@ def expand_and_implode(
         else {**config_default, **config_user},
     )
 
-    expand(delete_origins=True, ctx=ctx)
+    process_expand(delete_origins=True, ctx=ctx)
 
     print("\nImploding... 💥")
 

@@ -118,8 +118,10 @@ def expand_all_project_templates(*, delete_templates: bool) -> None:
 def get_rename_destination_path(orig_path_str: str) -> str:
     holder_path_str = orig_path_str[: -len(rename_ext)]
 
-    rename_path = Path(f"{holder_path_str}.py")
+    rename_path = Path(f"{holder_path_str}.rename.py")
+    print("xxxx", rename_path)
     if rename_path.is_file():
+        print("zzzz")
         reaname_mod = import_module_from_file(rename_path)
         reaname: Callable[[Config, ModuleType], str] = reaname_mod.rename
         return reaname(config, utils)

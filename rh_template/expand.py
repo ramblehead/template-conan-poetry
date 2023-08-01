@@ -156,7 +156,7 @@ def get_rename_destination_path(
     return holder_path_str
 
 
-def do_renaming(*, delete_origins: bool, ctx: ProjectContext) -> None:
+def process_renames(*, delete_origins: bool, ctx: ProjectContext) -> None:
     orig_paths = get_paths_by_ext(
         ctx["path"],
         rename_ext,
@@ -188,7 +188,12 @@ def do_renaming(*, delete_origins: bool, ctx: ProjectContext) -> None:
     else:
         for orig_path in orig_paths:
             orig_path_str = str(orig_path)
-            dest_path_str = orig_path_str[: -len(rename_ext)]
+
+            dest_path_str = get_rename_destination_path(
+                orig_path_str,
+                delete_origins=delete_origins,
+                ctx=ctx,
+            )
 
             if orig_path.is_dir():
                 shutil.copytree(orig_path, dest_path_str)
@@ -198,7 +203,7 @@ def do_renaming(*, delete_origins: bool, ctx: ProjectContext) -> None:
 
 def expand(*, delete_origins: bool, ctx: ProjectContext) -> None:
     expand_all_project_templates(delete_templates=delete_origins, ctx=ctx)
-    do_renaming(delete_origins=delete_origins, ctx=ctx)
+    process_renames(delete_origins=delete_origins, ctx=ctx)
 
 
 def expand_and_implode(

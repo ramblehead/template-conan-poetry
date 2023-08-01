@@ -6,14 +6,19 @@ import os
 import shutil
 from pathlib import Path
 from types import ModuleType
-from typing import Self
+from typing import TYPE_CHECKING, Self
 
 from mako.lookup import TemplateLookup  # type: ignore reportMissingTypeStubs
 
 from . import utils
 from .config import Config, config
 
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
 sd_path = Path(__file__).parent
+template_ext = ".mako"
+rename_ext = ".rename"
 
 
 class ImportFromFileError(ModuleNotFoundError):
@@ -86,8 +91,6 @@ def get_paths_by_ext(path: Path, ext: str, *, with_dirs: bool) -> list[Path]:
 
 
 def expand_all_project_templates(*, delete_templates: bool) -> None:
-    template_ext = ".mako"
-
     in_template_files = get_paths_by_ext(
         sd_path.parent.resolve(strict=True),
         template_ext,
@@ -112,9 +115,19 @@ def expand_all_project_templates(*, delete_templates: bool) -> None:
             in_template_file.unlink()
 
 
-def do_renaming(*, delete_origins: bool) -> None:
-    rename_ext = ".rename"
+def get_rename_destination_path(orig_path_str: str) -> str:
+    holder_path_str = orig_path_str[: -len(rename_ext)]
 
+    rename_path = Path(f"{holder_path_str}.py")
+    if rename_path.is_file():
+        reaname_mod = import_module_from_file(rename_path)
+        reaname: Callable[[Config, ModuleType], str] = reaname_mod.rename
+        return reaname(config, utils)
+
+    return holder_path_str
+
+
+def do_renaming(*, delete_origins: bool) -> None:
     orig_paths = get_paths_by_ext(
         sd_path.parent.resolve(strict=True),
         rename_ext,
@@ -127,7 +140,7 @@ def do_renaming(*, delete_origins: bool) -> None:
         # Move files first
         for orig_path in orig_paths:
             orig_path_str = str(orig_path)
-            dest_path_str = orig_path_str[: -len(rename_ext)]
+            dest_path_str = get_rename_destination_path(orig_path_str)
             if not orig_path.is_dir():
                 shutil.move(orig_path, dest_path_str)
             else:

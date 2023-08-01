@@ -234,13 +234,14 @@ def expand_and_implode(
 
     # Wipe python cache directories
     pyc_paths = get_paths_by_ext(ctx["path"], "__pycache__", with_dirs=True)
+    pyc_path_strs = [str(p) for p in pyc_paths]
 
     subprocess.Popen(
         'python -c "'
         "import shutil, time;"
         "time.sleep(1);"
+        f"[shutil.rmtree(pyc) for pyc in {pyc_path_strs}];"
         f"shutil.rmtree('{rh_template_dir_path}');"
-        f"[shutil.rmtree(pyc) for pyc in {pyc_paths}];"
         f"shutil.os.remove('{implode_script_path_str}');\"",
         shell=True,
     )

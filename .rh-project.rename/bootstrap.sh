@@ -14,6 +14,11 @@ source "${SDPATH}/conf.sh"
 cd "${SDPATH}" && echo + cd "${PWD}"
 
 echo
+cd "${PRJ_ROOT_PATH}" && echo + cd "${PWD}"
+
+touch .rh-trusted
+
+echo
 CMD=(./poetry-install.sh)
 echo + "${CMD[@]}" && "${CMD[@]}"
 
@@ -32,8 +37,3 @@ echo + "${CMD[@]}" && "${CMD[@]}"
 echo
 CMD=(./run.sh)
 echo + "${CMD[@]}" && "${CMD[@]}"
-
-echo
-cd "${PRJ_ROOT_PATH}" && echo + cd "${PWD}"
-
-touch .rh-trusted

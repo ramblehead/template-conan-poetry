@@ -18,11 +18,35 @@
 (defvar ${project_name}/build-buffer-name
   "*${project_name}-build*")
 
-;; (defun ${project_name}/lint ()
-;;   (interactive)
-;;   (rh-project-compile
-;;    "yarn-run app:lint"
-;;    ${project_name}/build-buffer-name))
+(defun ${project_name}/build ()
+  (interactive)
+  (rh-project-compile
+   "build.sh"
+   ${project_name}/build-buffer-name))
+
+(defun ${project_name}/run ()
+  (interactive)
+  (rh-project-compile
+   "run.sh"
+   ${project_name}/build-buffer-name))
+
+(defun ${project_name}/clang-check ()
+  (interactive)
+  (rh-project-compile
+   "clang-check.sh"
+   ${project_name}/build-buffer-name))
+
+(defun ${project_name}/clang-tidy ()
+  (interactive)
+  (rh-project-compile
+   "clang-tidy.sh"
+   ${project_name}/build-buffer-name))
+
+(defun ${project_name}/clean ()
+  (interactive)
+  (rh-project-compile
+   "clean.sh"
+   ${project_name}/build-buffer-name))
 
 (defun ${project_name}/conan-install ()
   (interactive)
@@ -36,30 +60,21 @@
    "cmake.sh"
    ${project_name}/build-buffer-name))
 
-(defun ${project_name}/build ()
-  (interactive)
-  (rh-project-compile
-   "build.sh"
-   ${project_name}/build-buffer-name))
-
-(defun ${project_name}/clean-conan ()
-  (interactive)
-  (rh-project-compile
-   "clean-conan.sh"
-   ${project_name}/build-buffer-name))
-
 ;;; /b/}
 
 ;;; ${project_name}
 ;;; /b/{
 
 (defun ${project_name}/hydra-define ()
-  (defhydra ${project_name}-hydra (:color blue :columns 5)
+  (defhydra ${project_name}-hydra (:color blue :columns 4)
     "@${project_name} workspace commands"
     ;; ("l" ${project_name}/lint "lint")
     ("b" ${project_name}/build "build")
+    ("r" ${project_name}/run "run")
+    ("k" ${project_name}/clang-check "clang-check")
+    ("t" ${project_name}/clang-tidy "clang-tidy")
+    ("c" ${project_name}/clean "clean")
     ("i" ${project_name}/conan-install "conan-install")
-    ("c" ${project_name}/clean-conan "clean-conan")
     ("m" ${project_name}/cmake "cmake")))
 
 (${project_name}/hydra-define)

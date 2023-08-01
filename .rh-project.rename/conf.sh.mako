@@ -1,6 +1,6 @@
 ## Hey Emacs, this is -*- coding: utf-8 -*-
 <%
-  project_name = conf.project_name
+  project_name = config["project_name"]
 %>\
 # shellcheck disable=2034
 

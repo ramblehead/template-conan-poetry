@@ -4,28 +4,25 @@
 import os
 import shutil
 from pathlib import Path
-from types import ModuleType
-from typing import TypeVar
 
 from mako.lookup import TemplateLookup  # type: ignore reportMissingTypeStubs
 
-from . import conf, utils
+from . import utils
+from .config import Config, config
 
 sd_path = Path(__file__).parent
 
-T = TypeVar("T", bound=ModuleType)
 
-
-def _ensure_valid(conf: T) -> T:
-    if "project_name" not in conf.__dict__ or conf.project_name is None:
+def config_ensure_valid(config: Config) -> Config:
+    if "project_name" not in config or config["project_name"] is None:
         sd_path = (Path(__file__).parent).resolve(strict=True)
         project_path = sd_path.parent.resolve(strict=True)
-        conf.project_name = project_path.name  # type: ignore reportGeneralTypeIssues
+        config["project_name"] = project_path.name
 
-    return conf
+    return config
 
 
-conf = _ensure_valid(conf)
+config = config_ensure_valid(config)
 
 
 def expand_template(in_template_path: Path, out_file_path: Path) -> None:
@@ -36,7 +33,7 @@ def expand_template(in_template_path: Path, out_file_path: Path) -> None:
     )
 
     file_out_str: str = template.render(  # type: ignore unknownMemberType
-        conf=conf,
+        config=config,
         utils=utils,
     )
 

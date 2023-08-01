@@ -20,24 +20,22 @@ template_ext = ".mako"
 rename_ext = ".rename"
 
 
-def config_ensure_valid(config: Config) -> Config:
-    if "project_name" not in config or config["project_name"] is None:
-        sd_path = (Path(__file__).parent).resolve(strict=True)
-        project_path = sd_path.parent.resolve(strict=True)
-        config["project_name"] = project_path.name
-
-    return config
-
-
 class ProjectContext(TypedDict):
     path: Path
     config: Config
 
 
+def config_ensure_valid(config: Config, project_path: Path) -> Config:
+    if "project_name" not in config or config["project_name"] is None:
+        config["project_name"] = project_path.name
+
+    return config
+
+
 def create_project_context(*, path: Path, config: Config) -> ProjectContext:
     return {
         "path": path,
-        "config": config_ensure_valid(config),
+        "config": config_ensure_valid(config, path),
     }
 
 

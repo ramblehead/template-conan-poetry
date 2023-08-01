@@ -11,12 +11,12 @@ readonly SDPATH
 # shellcheck disable=1090
 source "${SDPATH}/conf.sh"
 
-cd "${SDPATH}" && echo + cd "${PWD}"
-
 echo
 cd "${PRJ_ROOT_PATH}" && echo + cd "${PWD}"
 
 touch .rh-trusted
+
+cd "${SDPATH}" && echo + cd "${PWD}"
 
 echo
 CMD=(./poetry-install.sh)

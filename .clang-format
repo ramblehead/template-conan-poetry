@@ -18,4 +18,8 @@ BinPackArguments: false
 AllowAllArgumentsOnNextLine: false
 BinPackParameters: false
 AllowAllParametersOfDeclarationOnNextLine: false
+---
+Language: Cpp
+DerivePointerAlignment: false
+PointerAlignment: Left
 ...

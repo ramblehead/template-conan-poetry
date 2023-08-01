@@ -11,29 +11,19 @@ readonly SDPATH
 # shellcheck disable=1090
 source "${SDPATH}/conf.sh"
 
-echo
-cd "${PRJ_ROOT_PATH}" && echo + cd "${PWD}"
-
-touch .rh-trusted
-
-cd "${SDPATH}" && echo + cd "${PWD}"
+"${SDPATH}/build.sh"
 
 echo
-CMD=(./poetry-install.sh)
+cd "${BLD_PATH}" && echo + cd "${PWD}"
+
+echo
+CMD=(source conanrun.sh)
 echo + "${CMD[@]}" && "${CMD[@]}"
 
 echo
-CMD=(./conan-install.sh)
+CMD=("./${PROJECT_NAME}.test")
 echo + "${CMD[@]}" && "${CMD[@]}"
 
 echo
-CMD=(./cmake.sh)
-echo + "${CMD[@]}" && "${CMD[@]}"
-
-echo
-CMD=(./build.sh)
-echo + "${CMD[@]}" && "${CMD[@]}"
-
-echo
-CMD=(./run-test.sh)
+CMD=(source deactivate_conanrun.sh)
 echo + "${CMD[@]}" && "${CMD[@]}"

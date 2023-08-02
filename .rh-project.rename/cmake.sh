@@ -21,9 +21,11 @@ CMD=(cmake)
 CMD+=(..)
 CMD+=("-DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake")
 CMD+=("-DCMAKE_EXPORT_COMPILE_COMMANDS=True")
+CMD+=("-DCMAKE_VERBOSE_MAKEFILE=True")
 # CMD+=("-DCMAKE_C_COMPILER=${CC}")
 # CMD+=("-DCMAKE_CXX_COMPILER=${CXX}")
-CMD+=("-DCMAKE_BUILD_TYPE=Release")
+# CMD+=("-DCMAKE_BUILD_TYPE=Release")
+CMD+=("-DCMAKE_BUILD_TYPE=RelWithDebInfo")
 echo + "${CMD[@]}" && "${CMD[@]}"
 
 echo

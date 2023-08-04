@@ -5,7 +5,6 @@ import os
 import platform
 import shutil
 import subprocess
-import sys
 from pathlib import Path
 from types import ModuleType
 from typing import TYPE_CHECKING, Self, TypedDict

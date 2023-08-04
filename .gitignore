@@ -7,16 +7,12 @@ __pycache__/
 .ruff_cache/
 
 
-# Conan
+# Conan, CMake, C/C++, etc.
 
 /build
 /CMakeUserPresets.json
-
-
-# C/C++
-
 /.cache/clangd
-
+/compile_commands.json
 
 # Backup Files
 *.bkp

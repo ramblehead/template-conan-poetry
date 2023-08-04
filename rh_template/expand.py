@@ -260,3 +260,5 @@ def expand_and_implode(
             f"shutil.os.remove('{implode_script_path_str}');\"",
             shell=True,
         )
+
+        input("\nPress Enter to exit...")

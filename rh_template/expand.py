@@ -2,8 +2,10 @@
 
 import importlib.util
 import os
+import platform
 import shutil
 import subprocess
+import sys
 from pathlib import Path
 from types import ModuleType
 from typing import TYPE_CHECKING, Self, TypedDict
@@ -228,9 +230,8 @@ def expand_and_implode(
 
     process_expand(delete_origins=True, ctx=ctx)
 
-    print("\nImploding... 💥")
-
-    rh_template_dir_path = ctx["path"] / "rh_template"
+    boom = "💥" if sys.stdout.encoding.lower().startswith("utf") else "*Boom!*"
+    print(f"\nImploding... {boom}")
 
     # Wipe python cache directories
     pyc_paths = get_paths_by_ext(ctx["path"], "__pycache__", with_dirs=True)
@@ -238,10 +239,24 @@ def expand_and_implode(
 
     subprocess.Popen(
         'python -c "'
-        "import shutil, time;"
-        "time.sleep(1);"
-        f"[shutil.rmtree(pyc) for pyc in {pyc_path_strs}];"
-        f"shutil.rmtree('{rh_template_dir_path}');"
-        f"shutil.os.remove('{implode_script_path_str}');\"",
+        "import shutil;"
+        f'[shutil.rmtree(pyc, ignore_errors=True) for pyc in {pyc_path_strs}];"',
         shell=True,
     )
+
+    os.chdir(ctx["path"])
+    sd_path = Path(__file__).parent
+
+    if platform.system() == "Windows":
+        os.startfile(  # noqa: S606 # type: ignore[reportGeneralTypeIssues]
+            str(sd_path / "ms-implode.bat"),
+        )
+    else:
+        rh_template_dir_path = ctx["path"] / "rh_template"
+        subprocess.Popen(
+            'python -c "'
+            "import shutil;"
+            f"shutil.rmtree('{rh_template_dir_path}', ignore_errors=True);"
+            f"shutil.os.remove('{implode_script_path_str}');\"",
+            shell=True,
+        )

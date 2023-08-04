@@ -29,5 +29,11 @@ CMD+=("-DCMAKE_BUILD_TYPE=RelWithDebInfo")
 echo + "${CMD[@]}" && "${CMD[@]}"
 
 echo
+CMD=(mv -f)
+CMD+=("compile_commands.json")
+CMD+=("${PRJ_ROOT_PATH}")
+echo + "${CMD[@]}" && "${CMD[@]}"
+
+echo
 CMD=(source deactivate_conanbuild.sh)
 echo + "${CMD[@]}" && "${CMD[@]}"

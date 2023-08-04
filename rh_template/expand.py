@@ -244,10 +244,9 @@ def expand_and_implode(
         shell=True,
     )
 
-    os.chdir(ctx["path"])
-    sd_path = Path(__file__).parent
-
     if platform.system() == "Windows":
+        os.chdir(ctx["path"])
+        sd_path = Path(__file__).parent
         os.startfile(  # noqa: S606 # type: ignore[reportGeneralTypeIssues]
             str(sd_path / "ms-implode.bat"),
         )

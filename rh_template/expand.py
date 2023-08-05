@@ -7,7 +7,7 @@ import shutil
 import subprocess
 from pathlib import Path
 from types import ModuleType
-from typing import TYPE_CHECKING, Self, TypedDict
+from typing import TYPE_CHECKING, Any, Self, TypedDict, cast
 
 from mako.lookup import TemplateLookup  # type: ignore reportMissingStubs
 
@@ -206,8 +206,9 @@ def process_expand(*, delete_origins: bool, ctx: ProjectContext) -> None:
 
 def expand(
     implode_script_path_str: str,
-    config_user: Config | None = None,
+    config: dict[str, Any] | None = None,
 ) -> None:
+    config_user = cast(Config | None, config)
     ctx = create_project_context(
         path=Path(implode_script_path_str).parent,
         config=config_default
@@ -220,8 +221,9 @@ def expand(
 
 def expand_and_implode(
     implode_script_path_str: str,
-    config_user: Config | None = None,
+    config: dict[str, Any] | None = None,
 ) -> None:
+    config_user = cast(Config | None, config)
     ctx = create_project_context(
         path=Path(implode_script_path_str).parent,
         config=config_default if config_user is None else config_default | config_user,

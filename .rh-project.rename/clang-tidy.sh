@@ -22,7 +22,7 @@ WARNING_TOTAL_COUNT=0
 SRC_TYPES=(-name '*.cpp' -o -name '*.hpp' -o -name '*.c' -o -name '*.h')
 
 while IFS= read -r -d '' FILE; do
-  CMD=("clang-tidy-${CLANG_VERSION}")
+  CMD=("clang-tidy-${CLANG_TIDY_VERSION}")
   CMD+=("'${FILE}'")
 
   OUTPUT=$(script -qefc "${CMD[*]}" /dev/null < /dev/null | tee /dev/tty) ||:

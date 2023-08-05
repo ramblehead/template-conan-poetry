@@ -13,7 +13,7 @@ source "${SDPATH}/conf.sh"
 
 cd "${PRJ_ROOT_PATH}" && echo + cd "${PWD}"
 
-CMD=("'clang-check-${CLANG_VERSION}'")
+CMD=("'clang-check-${CLANG_CHECK_VERSION}'")
 CMD+=(--analyze)
 CMD+=("--extra-arg=-Xanalyzer")
 CMD+=("--extra-arg=-analyzer-output=text")

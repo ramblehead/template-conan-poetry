@@ -4,7 +4,8 @@
 from rh_template import expand_and_implode
 
 config = {
-    # "project_name": "xxx",
+    # None - to use project dir name as project name
+    "project_name": None,
 }
 
 if __name__ == "__main__":

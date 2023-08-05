@@ -18,8 +18,8 @@ CMD+=(.)
 CMD+=("--output-folder=${BLD_PATH}")
 # CMD+=('--build="*"')
 CMD+=("--build=missing")
-CMD+=("-pr:h=./utils/conan2/profiles/clang-${CLANG_VERSION}")
-CMD+=("-pr:b=./utils/conan2/profiles/clang-${CLANG_VERSION}")
+CMD+=("-pr:h=./utils/conan2/profiles/${COMPILER}-${COMPILER_VERSION}")
+CMD+=("-pr:b=./utils/conan2/profiles/${COMPILER}-${COMPILER_VERSION}")
 
 # shellcheck disable=2294
 echo + "${CMD[@]}" && eval "${CMD[@]}"

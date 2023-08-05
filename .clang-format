@@ -1,25 +1,51 @@
 ---
+# https://gist.github.com/kjk/298216da8cb4c665075b#file-3-5-llvm-txt
 BasedOnStyle: LLVM
 UseTab: Never
 IndentWidth: 2
 TabWidth: 2
 ColumnLimit: 79
-BreakBeforeBraces: Allman
 AllowShortIfStatementsOnASingleLine: false
 IndentCaseLabels: false
-AccessModifierOffset: -4
+AccessModifierOffset: -1
 NamespaceIndentation: All
 FixNamespaceComments: false
-AlignAfterOpenBracket: BlockIndent
 ContinuationIndentWidth: 2
 BreakBeforeBraces: Attach
 InsertBraces: true
 BinPackArguments: false
-AllowAllArgumentsOnNextLine: false
 BinPackParameters: false
+
+# https://clang.llvm.org/docs/ClangFormatStyleOptions.html#alignafteropenbracket
+AlignAfterOpenBracket: BlockIndent
+
+# https://clang.llvm.org/docs/ClangFormatStyleOptions.html#allowallargumentsonnextline
+AllowAllArgumentsOnNextLine: false
+
+# https://clang.llvm.org/docs/ClangFormatStyleOptions.html#allowallparametersofdeclarationonnextline
 AllowAllParametersOfDeclarationOnNextLine: false
+
+# https://clang.llvm.org/docs/ClangFormatStyleOptions.html#separatedefinitionblocks
+SeparateDefinitionBlocks: Always
+
+# https://clang.llvm.org/docs/ClangFormatStyleOptions.html#removeparentheses
+EmptyLineBeforeAccessModifier: Always
+
+# https://clang.llvm.org/docs/ClangFormatStyleOptions.html#removesemicolon
+RemoveSemicolon: true
+
+# https://clang.llvm.org/docs/ClangFormatStyleOptions.html#removeparentheses
+RemoveParentheses: ReturnStatement
+
+# https://clang.llvm.org/docs/ClangFormatStyleOptions.html#alignoperands
+AlignOperands: DontAlign
+
+# https://clang.llvm.org/docs/ClangFormatStyleOptions.html#requiresexpressionindentation
+RequiresExpressionIndentation: OuterScope
+
 ---
 Language: Cpp
+Standard: c++20
 DerivePointerAlignment: false
 PointerAlignment: Left
 ...

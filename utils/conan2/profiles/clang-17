@@ -1,0 +1,19 @@
+[settings]
+arch=x86_64
+# build_type=Release
+# build_type=MinSizeRel
+build_type=RelWithDebInfo
+compiler=clang
+compiler.cppstd=gnu20
+compiler.libcxx=libc++
+compiler.version=17
+# compiler.sanitizer=Address
+os=Linux
+
+[buildenv]
+CC=clang-17
+CXX=clang++-17
+LD=gold
+CXXFLAGS=-fsanitize=address
+CFLAGS=-fsanitize=address
+LDFLAGS=-fsanitize=address

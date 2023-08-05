@@ -1,8 +1,12 @@
+## Hey Emacs, this is -*- coding: utf-8 -*-
+<%
+  project_name = utils.kebab_case(config["project_name"])
+%>\
 [tool.poetry]
-name = "hello-conan"
+name = "${project_name}"
 version = "0.1.0"
 description = ""
-authors = ["ramblehead <v.rybynok@gmail.com>"]
+authors = ["ramblehead"]
 readme = "README.md"
 packages = [{ include = "poetry_utils", from = "utils" }]
 

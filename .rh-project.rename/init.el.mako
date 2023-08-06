@@ -88,23 +88,34 @@
 
 (add-to-list 'rm-blacklist " ${project_name}")
 
-(defun ${project_name}/lsp-deps-providers-path (path)
-  (concat (expand-file-name (rh-project-get-root))
-          "node_modules/.bin/"
-          path))
+(defvar lsp-clients-clangd-library-directories
+  '("~/.conan2" "/usr/include" "/usr/local/include"))
 
 (defvar ${project_name}/lsp-clients-clangd-args '())
-
-(setq lsp-clients-clangd-library-directories
-      '("~/.conan2" "/usr/include" "/usr/local/include"))
 
 (defun ${project_name}/lsp-clangd-init ()
   (setq ${project_name}/lsp-clients-clangd-args
         (copy-sequence lsp-clients-clangd-args))
-  (add-to-list
-   '${project_name}/lsp-clients-clangd-args
-   "--query-driver=/usr/bin/g*-11,/usr/bin/clang*-16"
-   t)
+
+  (let ((clang-version ""))
+    (save-match-data
+      (and (string-match
+            ".*-\\([[:digit:]]+\\)"
+            lsp-clients-clangd-executable)
+           (setq clang-version
+                 (match-string 1 lsp-clients-clangd-executable))))
+
+    (add-to-list
+     '${project_name}/lsp-clients-clangd-args
+     (concat
+      "--query-driver="
+      (mapconcat
+       'identity
+       `("/usr/bin/g*-11"
+         "/usr/bin/g*-10"
+         ,(concat "/usr/bin/clang*-" clang-version))
+       ","))
+     t))
 
   ;; (add-hook
   ;;  'lsp-after-open-hook
@@ -115,40 +126,6 @@
   ;;  #'${project_name}/company-capf-c++-local-disable)
   )
 
-;; (defun ${project_name}/company-capf-c++-local-disable ()
-;;   (when (eq major-mode 'c++-mode)
-;;     (setq-local company-backends
-;;                 (remq 'company-capf company-backends))))
-
-(defun ${project_name}/lsp-javascript-init ()
-  (plist-put
-   lsp-deps-providers
-   :local (list :path #'${project_name}/lsp-deps-providers-path))
-
-  (lsp-dependency 'typescript-language-server
-                  '(:local "typescript-language-server"))
-
-  (lsp--require-packages)
-
-  (lsp-dependency 'typescript '(:local "tsserver"))
-
-  (add-hook
-   'lsp-after-initialize-hook
-   #'${project_name}/flycheck-add-eslint-next-to-lsp))
-
-(defun ${project_name}/flycheck-add-eslint-next-to-lsp ()
-  (when (seq-contains-p '(js2-mode typescript-mode web-mode) major-mode)
-    (flycheck-add-next-checker 'lsp 'javascript-eslint)))
-
-(defun ${project_name}/flycheck-after-syntax-check-hook-once ()
-  (remove-hook
-   'flycheck-after-syntax-check-hook
-   #'${project_name}/flycheck-after-syntax-check-hook-once
-   t)
-  (flycheck-buffer))
-
-;; (eval-after-load 'lsp-javascript #'${project_name}/lsp-javascript-init)
-(eval-after-load 'lsp-mode #'${project_name}/lsp-javascript-init)
 (eval-after-load 'lsp-mode #'${project_name}/lsp-clangd-init)
 
 (defun ${project_name}-setup ()
@@ -190,45 +167,6 @@
           ;; (clang-format-mode 1)
           (company-mode 1)
           (lsp-deferred))
-
-         ;; JavaScript/TypeScript
-         ((or (setq
-               ext-js
-               (string-match-p
-                (concat "\\.ts\\'\\|\\.tsx\\'\\|\\.js\\'\\|\\.jsx\\'"
-                        "\\|\\.cjs\\'\\|\\.mjs\\'")
-                file-rpath))
-              (string-match-p "^#!.*node"
-                              (or (save-excursion
-                                    (goto-char (point-min))
-                                    (thing-at-point 'line t))
-                                  "")))
-
-          (when (boundp 'rh-js2-additional-externs)
-            (setq-local rh-js2-additional-externs
-                        (append rh-js2-additional-externs
-                                '("require" "exports" "module" "process"
-                                  "__dirname"))))
-
-          (setq-local flycheck-idle-change-delay 3)
-          (setq-local flycheck-check-syntax-automatically
-                      ;; '(save mode-enabled)
-                      '(save idle-change mode-enabled))
-          (setq-local flycheck-javascript-eslint-executable
-                      (concat (expand-file-name project-root)
-                              "node_modules/.bin/eslint"))
-
-          (setq-local lsp-enabled-clients '(ts-ls))
-          ;; (setq-local lsp-headerline-breadcrumb-enable nil)
-          (setq-local lsp-before-save-edits nil)
-          (setq-local lsp-modeline-diagnostics-enable nil)
-          (add-hook
-           'flycheck-after-syntax-check-hook
-           #'${project_name}/flycheck-after-syntax-check-hook-once
-           nil t)
-          (lsp 1)
-          ;; (lsp-headerline-breadcrumb-mode -1)
-          (prettier-mode 1))
 
          ;; Python
          ((or (setq ext-js (string-match-p

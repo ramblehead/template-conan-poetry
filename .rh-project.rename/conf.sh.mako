@@ -1,12 +1,15 @@
 ## Hey Emacs, this is -*- coding: utf-8 -*-
 <%
-  project_name = config["project_name"]
+  project_name = utils.kebab_case(config["project_name"])
 %>\
 # shellcheck disable=2034
 
 readonly PROJECT_NAME="${project_name}"
 
-readonly CLANG_VERSION=15
+readonly COMPILER=clang
+readonly COMPILER_VERSION=15
+readonly CLANG_CHECK_VERSION=15
+readonly CLANG_TIDY_VERSION=15
 
 PRJ_ROOT_PATH="<%text>${SDPATH}</%text>/.."
 PRJ_ROOT_PATH="$(cd "<%text>${PRJ_ROOT_PATH}</%text>" && pwd)"

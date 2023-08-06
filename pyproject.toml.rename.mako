@@ -6,7 +6,7 @@
 name = "${project_name}"
 version = "0.1.0"
 description = ""
-authors = ["ramblehead"]
+authors = ["ramblehead <rh@gmail.com>"]
 readme = "README.md"
 packages = [{ include = "poetry_utils", from = "utils" }]
 

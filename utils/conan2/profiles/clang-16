@@ -10,6 +10,9 @@ compiler.version=16
 # compiler.sanitizer=Address
 os=Linux
 
+[options]
+boost/*:without_stacktrace=True
+
 [buildenv]
 CC=clang-16
 CXX=clang++-16

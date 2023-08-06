@@ -3,16 +3,19 @@ arch=x86_64
 # build_type=Release
 # build_type=MinSizeRel
 build_type=RelWithDebInfo
-compiler=clang
+compiler=gcc
 compiler.cppstd=gnu20
-compiler.libcxx=libc++
-compiler.version=17
+compiler.libcxx=libstdc++
+compiler.version=11
 # compiler.sanitizer=Address
 os=Linux
 
+[options]
+boost/*:without_stacktrace=True
+
 [buildenv]
-CC=clang-17
-CXX=clang++-17
+CC=gcc-11
+CXX=g++-11
 LD=gold
 CXXFLAGS=-fsanitize=address
 CFLAGS=-fsanitize=address

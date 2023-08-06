@@ -89,7 +89,11 @@
 (add-to-list 'rm-blacklist " ${project_name}")
 
 (defvar lsp-clients-clangd-library-directories
-  '("~/.conan2" "/usr/include" "/usr/local/include"))
+  '("~/.conan2"
+    "/usr/include"
+    "/usr/lib"
+    "/usr/local/include"
+    "/usr/local/lib"))
 
 (defvar ${project_name}/lsp-clients-clangd-args '())
 

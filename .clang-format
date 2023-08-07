@@ -8,8 +8,6 @@ ColumnLimit: 79
 AllowShortIfStatementsOnASingleLine: false
 IndentCaseLabels: false
 AccessModifierOffset: -1
-NamespaceIndentation: All
-FixNamespaceComments: false
 ContinuationIndentWidth: 2
 BreakBeforeBraces: Attach
 InsertBraces: true
@@ -42,6 +40,18 @@ AlignOperands: DontAlign
 
 # https://clang.llvm.org/docs/ClangFormatStyleOptions.html#requiresexpressionindentation
 RequiresExpressionIndentation: OuterScope
+
+# https://clang.llvm.org/docs/ClangFormatStyleOptions.html#alwaysbreaktemplatedeclarations
+AlwaysBreakTemplateDeclarations: Yes
+
+# https://clang.llvm.org/docs/ClangFormatStyleOptions.html#fixnamespacecomments
+FixNamespaceComments: true
+
+# https://clang.llvm.org/docs/ClangFormatStyleOptions.html#namespaceindentation
+NamespaceIndentation: None
+
+# https://clang.llvm.org/docs/ClangFormatStyleOptions.html#reflowcomments
+ReflowComments: false
 
 ---
 Language: Cpp

@@ -21,8 +21,9 @@ CMD=(source conanrun.sh)
 echo + "${CMD[@]}" && "${CMD[@]}"
 
 echo
-CMD=("./${PROJECT_NAME}.test")
+CMD=(ctest)
 echo + "${CMD[@]}" && "${CMD[@]}"
+
 
 echo
 CMD=(source deactivate_conanrun.sh)

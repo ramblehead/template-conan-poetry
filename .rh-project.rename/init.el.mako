@@ -18,13 +18,13 @@
 (defvar ${project_name}/build-buffer-name
   "*${project_name}-build*")
 
-(defun ${project_name}/build ()
+(defun ${project_name}/build-main ()
   (interactive)
   (rh-project-compile
    "build.sh"
    ${project_name}/build-buffer-name))
 
-(defun ${project_name}/run ()
+(defun ${project_name}/run-main ()
   (interactive)
   (rh-project-compile
    "run.sh"
@@ -69,8 +69,8 @@
   (defhydra ${project_name}-hydra (:color blue :columns 4)
     "@${project_name} workspace commands"
     ;; ("l" ${project_name}/lint "lint")
-    ("b" ${project_name}/build "build")
-    ("r" ${project_name}/run "run")
+    ("b" ${project_name}/build-main "build-main")
+    ("r" ${project_name}/run-main "run-main")
     ("k" ${project_name}/clang-check "clang-check")
     ("t" ${project_name}/clang-tidy "clang-tidy")
     ("c" ${project_name}/clean "clean")

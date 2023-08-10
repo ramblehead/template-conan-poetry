@@ -11,19 +11,20 @@ readonly SDPATH
 # shellcheck disable=1090
 source "${SDPATH}/conf.sh"
 
-"${SDPATH}/build.sh"
-
-echo
 cd "${BLD_PATH}" && echo + cd "${PWD}"
 
 echo
-CMD=(source conanrun.sh)
+CMD=(source conanbuild.sh)
 echo + "${CMD[@]}" && "${CMD[@]}"
 
 echo
-CMD=("./${PROJECT_NAME}")
+CMD=(cmake)
+CMD+=(--build)
+CMD+=(.)
+CMD+=(--target "${PROJECT_NAME}.perf")
+CMD+=("--config=Release")
 echo + "${CMD[@]}" && "${CMD[@]}"
 
 echo
-CMD=(source deactivate_conanrun.sh)
+CMD=(source deactivate_conanbuild.sh)
 echo + "${CMD[@]}" && "${CMD[@]}"

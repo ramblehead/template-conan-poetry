@@ -11,7 +11,7 @@ readonly SDPATH
 # shellcheck disable=1090
 source "${SDPATH}/conf.sh"
 
-"${SDPATH}/build.sh"
+"${SDPATH}/build-main-perf.sh"
 
 echo
 cd "${BLD_PATH}" && echo + cd "${PWD}"
@@ -21,9 +21,8 @@ CMD=(source conanrun.sh)
 echo + "${CMD[@]}" && "${CMD[@]}"
 
 echo
-CMD=(ctest)
+CMD=("./${PROJECT_NAME}.perf")
 echo + "${CMD[@]}" && "${CMD[@]}"
-
 
 echo
 CMD=(source deactivate_conanrun.sh)

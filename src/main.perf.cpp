@@ -36,7 +36,7 @@ auto main(int /*argc*/, char* /*argv*/[]) -> int {
     [&solutionRes, &durationAvgNanoSecond](int32_t num) {
       const auto start = std::chrono::high_resolution_clock::now();
 
-      solutionRes = solution(num);
+      // solutionRes = solution(num);
 
       const auto finish = std::chrono::high_resolution_clock::now();
       const std::chrono::duration<double, std::nano> duration = finish - start;

@@ -1,5 +1,7 @@
 // Hey Emacs, this is -*- coding: utf-8 -*-
 
+// NOLINTBEGIN(misc-include-cleaner)
+
 #include <chrono>
 #include <cstdint>
 #include <iomanip>
@@ -7,7 +9,6 @@
 #include <random>
 #include <range/v3/algorithm/for_each.hpp>
 #include <range/v3/view.hpp>
-#include <vector>
 
 #include "main.hpp"
 
@@ -15,7 +16,7 @@ namespace views = ranges::views;
 
 constexpr auto CYCLES_COUNT = 1'000'000;
 
-auto main(int /*argc*/, char * /*argv*/[]) -> int {
+auto main(int /*argc*/, char* /*argv*/[]) -> int {
   std::random_device device;
   std::default_random_engine engine{device()};
   constexpr auto distribution_max = 2'147'483'647;
@@ -50,3 +51,5 @@ auto main(int /*argc*/, char * /*argv*/[]) -> int {
 
   return EXIT_SUCCESS;
 }
+
+// NOLINTEND(misc-include-cleaner)

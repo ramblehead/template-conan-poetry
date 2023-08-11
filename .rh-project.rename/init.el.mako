@@ -21,13 +21,13 @@
 (defun ${project_name}/build-main ()
   (interactive)
   (rh-project-compile
-   "build.sh"
+   "build-main.sh"
    ${project_name}/build-buffer-name))
 
 (defun ${project_name}/run-main ()
   (interactive)
   (rh-project-compile
-   "run.sh"
+   "run-main.sh"
    ${project_name}/build-buffer-name))
 
 (defun ${project_name}/clang-check ()

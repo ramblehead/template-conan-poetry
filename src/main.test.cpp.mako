@@ -4,6 +4,8 @@
 %>\
 // Hey Emacs, this is -*- coding: utf-8 -*-
 
+// NOLINTBEGIN(misc-include-cleaner)
+
 #include "main.hpp"
 #include <boost/test/tools/old/interface.hpp>
 
@@ -14,6 +16,8 @@ BOOST_AUTO_TEST_CASE(binary_gap) {
   BOOST_REQUIRE_EQUAL(solution(42), 42);
   BOOST_REQUIRE_NE(solution(42), 43);
 }
+
+// NOLINTEND(misc-include-cleaner)
 
 // #include <cassert>
 // #include <concepts/concepts.hpp>

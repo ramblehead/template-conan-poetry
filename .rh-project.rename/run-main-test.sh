@@ -21,7 +21,7 @@ CMD=(source conanrun.sh)
 echo + "${CMD[@]}" && "${CMD[@]}"
 
 echo
-CMD=(ctest)
+CMD=(ctest --rerun-failed --output-on-failure)
 echo + "${CMD[@]}" && "${CMD[@]}"
 
 

@@ -1,0 +1,23 @@
+# Similar settings to leetcode.com
+
+[settings]
+arch=x86_64
+# build_type=Release
+# build_type=MinSizeRel
+build_type=RelWithDebInfo
+compiler=clang
+compiler.cppstd=20
+compiler.libcxx=libc++
+compiler.version=12
+os=Linux
+
+[options]
+boost/*:without_stacktrace=True
+
+[buildenv]
+CC=clang-12
+CXX=clang++-12
+LD=gold
+CXXFLAGS=-fsanitize=address
+CFLAGS=-fsanitize=address
+LDFLAGS=-fsanitize=address

@@ -125,6 +125,7 @@ def expand_all_project_templates(
 
         print(f"  {out_file_path}")
         expand_template(in_template_file, out_file_path, ctx=ctx)
+        shutil.copystat(in_template_file, out_file_path)
 
     if delete_templates:
         for in_template_file in in_template_files:
@@ -142,6 +143,8 @@ def get_rename_destination_path(
     renamer_path = Path(f"{holder_path_str}.rename.py")
     if renamer_path.is_file():
         reanamer_mod = import_module_from_file(renamer_path)
+
+        # if hasattr(reanamer_mod, "rename"):
         reaname: Callable[[Config, ModuleType], str] = reanamer_mod.rename
         renamed_path = renamer_path.parent / reaname(ctx["config"], utils)
 
@@ -176,6 +179,8 @@ def process_renames(*, delete_origins: bool, ctx: ProjectContext) -> None:
 
             if not orig_path.is_dir():
                 shutil.move(orig_path, dest_path_str)
+                # shutil.copy2(orig_path, dest_path_str)
+                # orig_path.unlink()
             else:
                 dirs_to_move.append((orig_path_str, dest_path_str))
 
@@ -196,7 +201,9 @@ def process_renames(*, delete_origins: bool, ctx: ProjectContext) -> None:
             if orig_path.is_dir():
                 shutil.copytree(orig_path, dest_path_str)
             else:
-                shutil.copy(orig_path, dest_path_str)
+                # shutil.copy(orig_path, dest_path_str)
+                # shutil.copystat(orig_path, dest_path_str)
+                shutil.copy2(orig_path, dest_path_str)
 
 
 def process_expand(*, delete_origins: bool, ctx: ProjectContext) -> None:

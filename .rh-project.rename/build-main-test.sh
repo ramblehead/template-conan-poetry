@@ -1,8 +1,4 @@
-## Hey Emacs, this is -*- coding: utf-8 -*-
-<%
-  project_name = utils.kebab_case(config["project_name"])
-%>\
-<%text>#!/bin/bash
+#!/bin/bash
 
 set -eu
 set -o pipefail
@@ -25,11 +21,10 @@ echo
 CMD=(cmake)
 CMD+=(--build)
 CMD+=(.)
-</%text>CMD+=(--target "${project_name}.test")<%text>
+CMD+=(--target "${PROJECT_NAME}.test")
 CMD+=("--config=Release")
 echo + "${CMD[@]}" && "${CMD[@]}"
 
 echo
 CMD=(source deactivate_conanbuild.sh)
 echo + "${CMD[@]}" && "${CMD[@]}"
-</%text>
